@@ -14,7 +14,9 @@ import {
   Shield,
   FileText,
   Globe,
-  Lock
+  Lock,
+  LayoutGrid,
+  List
 } from 'lucide-react';
 import { RatEntry as RapEntry, Company } from '../types';
 import { ratService as rapService, companyService, generateId } from '../services/db';
@@ -30,6 +32,7 @@ export const RapManagement: React.FC<RapManagementProps> = ({ companyId }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] = useState<RapEntry | null>(null);
   const [viewingRecord, setViewingRecord] = useState<RapEntry | null>(null);
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('table');
   
   // Form state
   const [formData, setFormData] = useState<Partial<RapEntry>>({
@@ -146,10 +149,28 @@ export const RapManagement: React.FC<RapManagementProps> = ({ companyId }) => {
             <Plus size={18} />
             Nuevo Registro RAP
           </button>
+          
+          <div className="flex bg-gray-100 p-1 rounded-xl">
+            <button
+              onClick={() => setViewMode('card')}
+              className={`p-1.5 rounded-lg transition-all ${viewMode === 'card' ? 'bg-white shadow-sm text-brand-primary' : 'text-gray-400 hover:text-gray-600'}`}
+              title="Vista de Tarjetas"
+            >
+              <LayoutGrid size={18} />
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`p-1.5 rounded-lg transition-all ${viewMode === 'table' ? 'bg-white shadow-sm text-brand-primary' : 'text-gray-400 hover:text-gray-600'}`}
+              title="Vista de Lista"
+            >
+              <List size={18} />
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* RAP Table */}
+      {/* RAP Table or Grid */}
+      {viewMode === 'table' ? (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
@@ -230,6 +251,60 @@ export const RapManagement: React.FC<RapManagementProps> = ({ companyId }) => {
           </table>
         </div>
       </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredEntries.length > 0 ? (
+            filteredEntries.map((item) => (
+              <div key={item.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-brand-light text-brand-secondary rounded-lg">
+                      <Scale size={18} />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 line-clamp-1">{item.process}</h3>
+                      <p className="text-[10px] text-gray-500 flex items-center gap-1">
+                        <Building2 size={10} />
+                        {getCompanyName(item.companyId)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-bold">
+                      {item.legalBase}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Interesados</p>
+                      <p className="text-gray-700 line-clamp-1">{item.dataSubjectCategory}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Conservación</p>
+                      <p className="text-gray-700 line-clamp-1">{item.retentionPeriod}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-2 border-t border-gray-50">
+                    <button onClick={() => setViewingRecord(item)} className="p-2 text-gray-400 hover:text-brand-primary transition-colors bg-gray-50 hover:bg-brand-primary/10 rounded-lg"><ChevronRight size={16} /></button>
+                    <button onClick={() => openEditModal(item)} className="p-2 text-gray-400 hover:text-brand-primary transition-colors bg-gray-50 hover:bg-brand-primary/10 rounded-lg"><Edit2 size={16} /></button>
+                    <button onClick={() => handleDelete(item.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors bg-gray-50 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full py-12 text-center text-gray-400 bg-white rounded-2xl border border-gray-100 border-dashed">
+              <Scale size={48} className="mx-auto mb-4 opacity-20" />
+              <p>No se encontraron registros en el RAP.</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Modal Form (Add/Edit) */}
       {isModalOpen && (

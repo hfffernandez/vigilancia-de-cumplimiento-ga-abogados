@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { Shield, Lock, Eye, FileCheck, AlertCircle, Users, Database, Globe, Scale, ExternalLink, Search, Filter, Download, Plus, Trash2, Edit2, ChevronRight, CheckCircle2, Clock, Activity, Building2, X, Calendar } from 'lucide-react';
+import { Shield, Lock, Eye, FileCheck, AlertCircle, Users, Database, Globe, Scale, ExternalLink, Search, Filter, Download, Plus, Trash2, Edit2, ChevronRight, CheckCircle2, Clock, Activity, Building2, X, Calendar, LayoutGrid, List } from 'lucide-react';
 import { DataInventory } from './DataInventory';
 import { RapManagement } from './RapManagement';
 import { ViewState, DataInventory as DataInventoryType, ArcoRequest, DpiaAssessment, Company, Evidence, RatEntry, EipdAssessment, DataProcessor } from '../types';
@@ -27,6 +27,8 @@ export const DataProtection: React.FC<DataProtectionProps> = ({ onNavigate, comp
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedArco, setSelectedArco] = useState<ArcoRequest | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+  const [viewModeArco, setViewModeArco] = useState<'table' | 'card'>('table');
+  const [viewModeProcessors, setViewModeProcessors] = useState<'table' | 'card'>('table');
   
   // Form State
   const [formData, setFormData] = useState<Partial<ArcoRequest>>({
@@ -305,26 +307,47 @@ export const DataProtection: React.FC<DataProtectionProps> = ({ onNavigate, comp
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-fade-in">
       <div className="p-6 border-b border-gray-50 flex justify-between items-center">
         <h3 className="font-bold text-gray-800">Gestión de Derechos ARCO</h3>
-        <button 
-          onClick={() => {
-            setIsAdding(true);
-            setSelectedArco(null);
-            setFormData({
-              requesterName: '',
-              requestType: 'Acceso',
-              status: 'Pendiente',
-              description: '',
-              requestDate: new Date().toISOString().split('T')[0],
-              deadlineDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-              companyId: companyId || companies[0]?.id
-            });
-            setIsModalOpen(true);
-          }}
-          className="bg-brand-primary text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2"
-        >
-          <Plus size={16} /> Nueva Solicitud
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => {
+              setIsAdding(true);
+              setSelectedArco(null);
+              setFormData({
+                requesterName: '',
+                requestType: 'Acceso',
+                status: 'Pendiente',
+                description: '',
+                requestDate: new Date().toISOString().split('T')[0],
+                deadlineDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                companyId: companyId || companies[0]?.id
+              });
+              setIsModalOpen(true);
+            }}
+            className="bg-brand-primary text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2"
+          >
+            <Plus size={16} /> Nueva Solicitud
+          </button>
+          
+          <div className="flex bg-gray-100 p-1 rounded-xl">
+            <button
+              onClick={() => setViewModeArco('card')}
+              className={`p-1.5 rounded-lg transition-all ${viewModeArco === 'card' ? 'bg-white shadow-sm text-brand-primary' : 'text-gray-400 hover:text-gray-600'}`}
+              title="Vista de Tarjetas"
+            >
+              <LayoutGrid size={16} />
+            </button>
+            <button
+              onClick={() => setViewModeArco('table')}
+              className={`p-1.5 rounded-lg transition-all ${viewModeArco === 'table' ? 'bg-white shadow-sm text-brand-primary' : 'text-gray-400 hover:text-gray-600'}`}
+              title="Vista de Lista"
+            >
+              <List size={16} />
+            </button>
+          </div>
+        </div>
       </div>
+      
+      {viewModeArco === 'table' ? (
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-gray-50 text-gray-500 font-semibold">
@@ -376,6 +399,67 @@ export const DataProtection: React.FC<DataProtectionProps> = ({ onNavigate, comp
           </tbody>
         </table>
       </div>
+      ) : (
+        <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-50/30">
+          {arcoRequests.map((req) => (
+            <div key={req.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-brand-light text-brand-secondary rounded-lg">
+                    <Users size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 line-clamp-1">{req.requesterName}</h3>
+                    <p className="text-[10px] text-gray-500 flex items-center gap-1">
+                      <Building2 size={10} />
+                      {getCompanyName(req.companyId)}
+                    </p>
+                  </div>
+                </div>
+                <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
+                  req.status === 'Resuelto' ? 'bg-green-50 text-green-600' : 
+                  req.status === 'Pendiente' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'
+                }`}>
+                  {req.status}
+                </span>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tipo</p>
+                  <span className="px-2 py-1 bg-brand-light text-brand-secondary rounded-lg text-[10px] font-bold">
+                    {req.requestType}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Solicitud</p>
+                    <p className="text-gray-700">{req.requestDate}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Vencimiento</p>
+                    <p className="text-gray-700">{req.deadlineDate}</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-gray-50">
+                  <button 
+                    onClick={() => {
+                      setSelectedArco(req);
+                      setIsAdding(false);
+                      setIsModalOpen(true);
+                    }}
+                    className="p-2 text-gray-400 hover:text-brand-primary transition-colors bg-gray-50 hover:bg-brand-primary/10 rounded-lg"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 
@@ -479,10 +563,30 @@ export const DataProtection: React.FC<DataProtectionProps> = ({ onNavigate, comp
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden animate-fade-in">
       <div className="p-6 border-b border-gray-50 flex justify-between items-center">
         <h3 className="font-bold text-gray-800">Terceros Encargados del Tratamiento</h3>
-        <button className="bg-brand-primary text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
-          <Plus size={16} /> Nuevo Encargado
-        </button>
+        <div className="flex items-center gap-3">
+          <button className="bg-brand-primary text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2">
+            <Plus size={16} /> Nuevo Encargado
+          </button>
+          <div className="flex bg-gray-100 p-1 rounded-xl">
+            <button
+              onClick={() => setViewModeProcessors('card')}
+              className={`p-1.5 rounded-lg transition-all ${viewModeProcessors === 'card' ? 'bg-white shadow-sm text-brand-primary' : 'text-gray-400 hover:text-gray-600'}`}
+              title="Vista de Tarjetas"
+            >
+              <LayoutGrid size={16} />
+            </button>
+            <button
+              onClick={() => setViewModeProcessors('table')}
+              className={`p-1.5 rounded-lg transition-all ${viewModeProcessors === 'table' ? 'bg-white shadow-sm text-brand-primary' : 'text-gray-400 hover:text-gray-600'}`}
+              title="Vista de Lista"
+            >
+              <List size={16} />
+            </button>
+          </div>
+        </div>
       </div>
+      
+      {viewModeProcessors === 'table' ? (
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead className="bg-gray-50 text-gray-500 font-semibold">
@@ -527,6 +631,58 @@ export const DataProtection: React.FC<DataProtectionProps> = ({ onNavigate, comp
           </tbody>
         </table>
       </div>
+      ) : (
+        <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-50/30">
+          {dataProcessors.map((proc) => (
+            <div key={proc.id} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-brand-light text-brand-secondary rounded-lg">
+                    <Building2 size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 line-clamp-1">{proc.businessName}</h3>
+                    <p className="text-[10px] text-gray-500 line-clamp-1">
+                      {proc.service}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">DPA Firmado</p>
+                    {proc.dpaSigned ? (
+                      <span className="flex items-center gap-1 text-green-600 font-bold text-[10px]">
+                        <CheckCircle2 size={14} /> SÍ
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-red-600 font-bold text-[10px]">
+                        <X size={14} /> NO
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Tran. Int.</p>
+                    {proc.internationalTransfer ? (
+                      <span className="px-2 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-bold inline-block">REQUERIDA</span>
+                    ) : (
+                      <span className="px-2 py-1 bg-gray-50 text-gray-400 rounded-lg text-[10px] font-bold inline-block">NO</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-gray-50">
+                  <button className="p-2 text-gray-400 hover:text-brand-primary transition-colors bg-gray-50 hover:bg-brand-primary/10 rounded-lg">
+                    <Edit2 size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 
