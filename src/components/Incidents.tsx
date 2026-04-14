@@ -94,12 +94,15 @@ export const Incidents: React.FC<IncidentsProps> = ({ initialId, companyId, cont
   };
 
   const StatusBadge = ({ status }: { status: string }) => {
-    const isClosed = status === 'Cerrada';
+    const config: Record<string, string> = {
+      'Nueva': 'bg-blue-500/10 text-blue-600 border-blue-500/20',
+      'En Investigación': 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+      'Escalada': 'bg-rose-500/10 text-rose-600 border-rose-500/20',
+      'Cerrada': 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+    };
+    const style = config[status] || 'bg-gray-500/10 text-gray-600 border-gray-500/20';
     return (
-      <span className={cn(
-        "px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border",
-        isClosed ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" : "bg-gray-500/10 text-gray-600 border-gray-500/20"
-      )}>
+      <span className={cn("px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border", style)}>
         {status}
       </span>
     );

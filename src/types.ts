@@ -26,7 +26,7 @@ export enum Severity {
 
 export enum Status {
   NEW = 'Nueva',
-  IN_PROGRESS = 'En Progreso',
+  IN_PROGRESS = 'En Investigación',
   CLOSED = 'Cerrada',
   ESCALATED = 'Escalada'
 }

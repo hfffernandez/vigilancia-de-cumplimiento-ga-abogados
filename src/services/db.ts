@@ -135,7 +135,7 @@ const generateIncidents = (companies: Company[]): Incident[] => {
     const count = Math.random() > 0.5 ? getRandomInt(1, 4) : 0;
     for (let i = 0; i < count; i++) {
       const severity = getRandomItem([Severity.LOW, Severity.MEDIUM, Severity.HIGH, Severity.CRITICAL]);
-      const status = getRandomItem(['Nueva', 'En Investigación', 'En Progreso', 'Escalada', 'Cerrada']);
+      const status = getRandomItem(['Nueva', 'En Investigación', 'Escalada', 'Cerrada']);
       const date = getRandomDate(sixMonthsAgo, today); 
       
       // Generate involved parties
@@ -172,7 +172,7 @@ const generateIncidents = (companies: Company[]): Incident[] => {
         }
       ];
 
-      if (status === 'Cerrada' || status === 'En Progreso') {
+      if (status === 'Cerrada' || status === 'En Investigación') {
         chain.push({
           id: generateId('COC'),
           action: 'Recolección de Evidencia Digital',
