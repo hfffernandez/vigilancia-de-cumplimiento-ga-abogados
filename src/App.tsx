@@ -380,12 +380,30 @@ function App() {
             {/* Left side - Branding */}
             <div className="bg-brand-primary p-12 text-white flex flex-col justify-between">
               <div>
-                <img 
-                  src="https://ga-abogados.cl/assets/logo-Cqg8IP0P.png" 
-                  alt="GA Abogados Logo" 
-                  className="max-h-28 w-auto brightness-0 invert mb-12 animate-fade-in"
-                  referrerPolicy="no-referrer"
-                />
+                {/* vc-logo: contenedor generoso para el logo en el panel de login/hub */}
+                <div style={{
+                  width: '280px',
+                  height: '110px',
+                  marginBottom: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                }}>
+                  <img 
+                    src="/assets/brand/ga-logo.png"
+                    alt="GA Abogados"
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
+                      width: 'auto',
+                      height: 'auto',
+                      objectFit: 'contain',
+                      display: 'block',
+                      filter: 'brightness(0) invert(1)',
+                    }}
+                    className="animate-fade-in"
+                  />
+                </div>
                 <h1 className="text-4xl font-bold tracking-tight mb-4">Vigilancia de Cumplimiento</h1>
                 <p className="text-white text-lg leading-relaxed opacity-90">
                   Plataforma integral de gestión de riesgos y cumplimiento normativo para Clientes de GA Abogados.
@@ -506,18 +524,50 @@ function App() {
           <ChevronLeft size={16} className={`transition-transform duration-300 ${!sidebarOpen ? 'rotate-180' : ''}`} />
         </button>
 
-        {/* Logo Area - Premium Brand Container */}
-        <div className={`h-36 flex items-center justify-center transition-all duration-300 ${sidebarOpen ? 'bg-brand-primary' : 'bg-brand-primary'} border-b border-white/5 overflow-hidden px-6`}>
+        {/* Logo Area - vc-sidebar-logo: bloque de marca claro en la parte superior del sidebar */}
+        <div
+          style={{
+            width: '100%',
+            height: sidebarOpen ? '96px' : '72px',
+            padding: sidebarOpen ? '12px 20px' : '12px 8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: sidebarOpen ? 'flex-start' : 'center',
+            borderBottom: '1px solid rgba(255,255,255,0.08)',
+            flexShrink: 0,
+            transition: 'all 0.3s ease-in-out',
+          }}
+        >
           {sidebarOpen ? (
-            <img 
-              src="https://ga-abogados.cl/assets/logo-Cqg8IP0P.png" 
-              alt="GA Abogados Logo" 
-              className="max-h-24 w-full object-contain brightness-0 invert animate-fade-in transition-all duration-500"
-              referrerPolicy="no-referrer"
+            <img
+              src="/assets/brand/ga-logo.png"
+              alt="GA Abogados"
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                width: 'auto',
+                height: 'auto',
+                objectFit: 'contain',
+                display: 'block',
+                filter: 'brightness(0) invert(1)',
+              }}
+              className="animate-fade-in transition-all duration-500"
             />
           ) : (
-            <div className="w-12 h-12 bg-white/10 backdrop-blur-md flex items-center justify-center flex-shrink-0 rounded-xl border border-white/10 hover:bg-white/20 transition-all">
-               <span className="text-brand-secondary font-black text-xl leading-none">GA</span>
+            <div style={{
+              width: '44px',
+              height: '44px',
+              background: 'rgba(255,255,255,0.1)',
+              backdropFilter: 'blur(8px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '10px',
+              border: '1px solid rgba(255,255,255,0.1)',
+              flexShrink: 0,
+              cursor: 'default',
+            }}>
+              <span style={{ color: '#f17551', fontWeight: 900, fontSize: '18px', lineHeight: 1 }}>GA</span>
             </div>
           )}
         </div>

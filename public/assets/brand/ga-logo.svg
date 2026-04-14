@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 200" width="620" height="200" role="img" aria-label="GA Abogados">
+  <title>GA Abogados</title>
+  <!-- Outer rectangle frame (blue, top + right sides only) -->
+  <!-- Top horizontal line -->
+  <line x1="148" y1="60" x2="490" y2="60" stroke="#1B3A6B" stroke-width="3.5"/>
+  <!-- Right vertical line -->
+  <line x1="490" y1="60" x2="490" y2="152" stroke="#1B3A6B" stroke-width="3.5"/>
+  <!-- Bottom horizontal line (partial — stops before completing) -->
+  <line x1="305" y1="152" x2="490" y2="152" stroke="#1B3A6B" stroke-width="3.5"/>
+  <!-- Left vertical line (partial — starts from top, stops mid) -->
+  <line x1="148" y1="60" x2="148" y2="130" stroke="#1B3A6B" stroke-width="3.5"/>
+
+  <!-- GA-ABOGADOS text in orange -->
+  <text
+    x="155"
+    y="148"
+    font-family="'Montserrat', 'Futura', 'Trebuchet MS', Arial, sans-serif"
+    font-size="42"
+    font-weight="700"
+    letter-spacing="9"
+    fill="#E8562A"
+  >GA·ABOGADOS</text>
+</svg>
