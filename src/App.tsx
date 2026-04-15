@@ -255,7 +255,7 @@ function App() {
     const isDataProtection = userProfile?.practiceArea === 'DATA_PROTECTION';
 
     // Views restricted to Compliance
-    const complianceOnlyViews = [ViewState.INCIDENTS, ViewState.RISK_CULTURE];
+    const complianceOnlyViews = [ViewState.RISK_CULTURE];
     // Views restricted to Data Protection
     const dataProtectionOnlyViews = [ViewState.DATA_PROTECTION];
     // Views restricted to GA Abogados Partners (Legal Studio)
