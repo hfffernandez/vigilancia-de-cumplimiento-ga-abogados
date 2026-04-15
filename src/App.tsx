@@ -258,22 +258,24 @@ function App() {
     const complianceOnlyViews = [ViewState.RISK_CULTURE];
     // Views restricted to Data Protection
     const dataProtectionOnlyViews = [ViewState.DATA_PROTECTION];
-    // Views restricted to GA Abogados Partners (Legal Studio)
+    // Views restricted to GA Abogados Partners (Legal Studio) - Directorio completo
     const dentonsOnlyViews = [ViewState.CLIENTS];
 
-    if (dentonsOnlyViews.includes(currentView) && !userProfile?.isGAAbogados) {
+    // CLIENTS view: GA Abogados ve directorio completo, clientes ven solo su empresa
+    if (currentView === ViewState.CLIENTS && !userProfile?.isGAAbogados) {
+        // Client users should see their own company dashboard instead of the client directory
         return (
             <div className="p-12 flex flex-col items-center justify-center h-full text-center text-gray-500 animate-fade-in">
-                <div className="w-24 h-24 bg-red-50 rounded-full flex items-center justify-center mb-6">
-                    <ShieldAlert className="w-10 h-10 text-red-300" />
+                <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center mb-6">
+                    <Building2 className="w-10 h-10 text-brand-primary" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-700 mb-2">Acceso Restringido</h2>
-                <p className="max-w-md text-gray-400">Este módulo es exclusivo para usuarios del Estudio Legal.</p>
-                <button 
+                <h2 className="text-2xl font-bold text-gray-700 mb-2">Acceso a Empresa</h2>
+                <p className="max-w-md text-gray-400 mb-6">Como cliente, tienes acceso al dashboard de tu empresa.</p>
+                <button
                     onClick={() => handleNavigation(ViewState.DASHBOARD, undefined, userProfile?.companyId || undefined)}
-                    className="mt-6 text-brand-primary font-bold hover:underline"
+                    className="px-6 py-3 bg-brand-primary text-white rounded-lg font-bold hover:bg-brand-primary/90 transition-colors"
                 >
-                    Volver a mi Dashboard
+                    Ir a mi Dashboard
                 </button>
             </div>
         );
